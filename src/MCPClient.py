@@ -50,8 +50,28 @@ class MCPClient:
         await self._connect_to_server()
     
     async def close(self) -> None:
-        """关闭客户端连接"""
-        await self.exit_stack.aclose()
+        """安全关闭客户端连接"""
+        if not hasattr(self, "exit_stack"):
+            return
+
+        try:
+            await self.exit_stack.aclose()
+        except GeneratorExit:
+            # 异步生成器被强制关闭时
+            pass
+        except asyncio.CancelledError:
+            # asyncio.run 或 TaskGroup 清理期间会触发
+            pass
+        except RuntimeError as e:
+            # AnyIO 的 cancel_scope 在不同 task 中退出
+            if "cancel scope" in str(e):
+                print("⚠️ MCPClient.close(): 忽略 AnyIO cancel_scope 任务不匹配错误")
+            else:
+                raise
+        except Exception as e:
+            print(f"⚠️ MCPClient.close() 异常: {e}")
+        finally:
+            print(f"✅ MCPClient [{self.name}] closed safely")
     
     def get_tools(self) -> List[Dict[str, Any]]:
         """
@@ -68,7 +88,35 @@ class MCPClient:
             }
             for tool in self.tools
         ]
-    
+    def _extract_text_from_result(self, result) -> str:
+        """
+        从 CallToolResult 提取文本
+        
+        Args:
+            result: CallToolResult 对象
+            
+        Returns:
+            提取的文本字符串
+        """
+        try:
+            if hasattr(result, 'isError') and result.isError:
+                # 如果是错误结果
+                error_text = []
+                for item in result.content:
+                    if hasattr(item, 'text'):
+                        error_text.append(item.text)
+                return f"错误: {' '.join(error_text)}"
+            
+            # 正常结果，提取所有文本
+            text_parts = []
+            for item in result.content:
+                if hasattr(item, 'text'):
+                    text_parts.append(item.text)
+            
+            return '\n\n'.join(text_parts) if text_parts else str(result)
+        
+        except Exception as e:
+            return f"提取结果失败: {str(e)}"
     async def call_tool(
         self,
         name: str,
@@ -95,7 +143,7 @@ class MCPClient:
             arguments=params or {}
         )
         
-        return result
+        return self._extract_text_from_result(result)
     
     async def _connect_to_server(self) -> None:
         """
@@ -133,7 +181,10 @@ class MCPClient:
             
             tool_names = [tool.name for tool in self.tools]
             print(f"✅ 已连接到 MCP 服务器，可用工具: {tool_names}")
-            
+        except asyncio.CancelledError:
+            # 若上层被取消任务，不传播异常
+            print("⚠️ MCPClient 连接任务被取消，已安全退出。")
+            raise        
         except Exception as e:
             print(f"❌ 连接到 MCP 服务器失败: {e}")
             raise RuntimeError(f"无法连接到 MCP 服务器: {e}") from e

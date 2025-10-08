@@ -33,7 +33,7 @@ class TestChatOpenAI:
         log_title("测试 1: 基础聊天")
         
         chat = ChatOpenAI(
-            model="gpt-4o-mini",  # 使用更经济的模型
+            model="google/gemini-2.0-flash-exp:free",  # 使用更经济的模型
             system_prompt="你是一个友好的助手，回答要简洁。",
         )
         
@@ -50,7 +50,7 @@ class TestChatOpenAI:
         log_title("测试 2: 多轮对话")
         
         chat = ChatOpenAI(
-            model="gpt-4o-mini",
+            model="google/gemini-2.0-flash-exp:free",
             system_prompt="你是一个数学助手。",
         )
         
@@ -107,7 +107,7 @@ class TestChatOpenAI:
         ]
         
         chat = ChatOpenAI(
-            model="openai/gpt-4o-mini",
+            model="google/gemini-2.0-flash-exp:free",
             system_prompt="你是一个助手，可以使用工具来帮助用户。",
             tools=tools
         )
@@ -177,7 +177,7 @@ class TestChatOpenAI:
         log_title("测试 4: 系统提示词和上下文")
         
         chat = ChatOpenAI(
-            model="gpt-4o-mini",
+            model="google/gemini-2.0-flash-exp:free",
             system_prompt="你是一个海盗船长，说话要有海盗风格。",
             context="我们正在寻找传说中的宝藏。"
         )

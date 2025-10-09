@@ -21,7 +21,7 @@ Also need to install [nodejs](https://nodejs.org/zh-cn)
     ```
 - To start the main program, use the following command:
     ```
-    python ./scr/main.py
+    python ./src/main.py
     ```
     To test the chat functionality module, run:
     ```

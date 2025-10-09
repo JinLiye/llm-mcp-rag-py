@@ -3,3 +3,4 @@ openai>=1.0.0
 mcp>=0.1.0
 rich>=13.0.0
 uv
+requests

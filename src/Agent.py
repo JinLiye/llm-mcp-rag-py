@@ -6,9 +6,9 @@ Agent 类 - 智能体编排器
 import json
 from typing import List, Optional, Dict, Any
 
-from MCPClient import MCPClient
-from ChatOpenAI import ChatOpenAI
-from utils import log_title
+from .MCPClient import MCPClient
+from .ChatOpenAI import ChatOpenAI
+from .utils import log_title
 
 
 class Agent:

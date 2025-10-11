@@ -8,8 +8,8 @@ import requests
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 
-from utils import log_title
-from VectorStore import VectorStore
+from .utils import log_title
+from.VectorStore import VectorStore
 
 # 加载环境变量
 load_dotenv()

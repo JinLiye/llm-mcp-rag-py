@@ -3,7 +3,7 @@ import json
 from typing import List, Dict, Any, Optional, TypedDict
 from openai import OpenAI
 from dotenv import load_dotenv
-from utils import log_title  # 假设你已经实现了 log_title
+from .utils import log_title  # 假设你已经实现了 log_title
 
 # 加载环境变量
 load_dotenv()

@@ -21,19 +21,19 @@ Also need to install [nodejs](https://nodejs.org/zh-cn)
     ```
 - To start the main program, use the following command:
     ```
-    python ./src/main.py
+    python -m src.main   
     ```
     To test the chat functionality module, run:
     ```
-    python ./src/test_chat.py
+    python -m src.test_chat
     ```
     To test the MCP client functionality, execute:
     ```
-    python ./src/testMCPClient.py
+    python -m src.testMCPClient
     ```
     To test the Agent module functionality, run:
     ```
-    python ./src/Agent.py
+    python -m src.Agent
     ```
     **Note:** When testing the Agent, make sure to set up the MCP client correctly. Modify the directory path r'C:\Users\32114\Desktop\code\llm-mcp-rag-py\output' to suit your needs, allowing access to the appropriate directory.
 ## LLM

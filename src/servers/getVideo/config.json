@@ -1,0 +1,15 @@
+{
+    "server_name": "getvideo-server",
+    "version": "0.1.0",
+    "description": "视频获取服务",
+    "supported_platforms": [
+      "youtube",
+      "bilibili",
+      "tiktok"
+    ],
+    "settings": {
+      "max_retries": 3,
+      "timeout": 30
+    }
+  }
+  

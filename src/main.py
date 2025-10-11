@@ -9,10 +9,10 @@ import asyncio
 import os
 from pathlib import Path
 
-from MCPClient import MCPClient
-from Agent import Agent
-from EmbeddingRetriver import EmbeddingRetriever
-from utils import log_title
+from .MCPClient import MCPClient
+from .Agent import Agent
+from .EmbeddingRetriver import EmbeddingRetriever
+from .utils import log_title
 
 
 # ============ 配置 ============
@@ -25,8 +25,7 @@ OUTPUT_PATH = Path.cwd() / 'output'
 # 告诉我 Karianne 的信息，先从我给你的 context 中找到相关信息，总结后创作一个关于这个人的故事。
 # 把故事和她的基本信息保存到 {OUTPUT_PATH}/antonette.md，输出一个漂亮的 markdown 文件。
 # """
-TASK = f"""
-进行pkp运算,参加运算的参数为1，5，6
+TASK = f"""帮我看看这个视频的信息，视频在C/abc/h内
 """
 
 
@@ -40,7 +39,7 @@ async def main():
     
     # Step 1: 检索上下文（RAG）
     context = ''
-    context = await retrieve_context()
+    # context = await retrieve_context()
     
     # Step 2: 创建 MCP 客户端
     fetch_mcp = MCPClient(
@@ -49,22 +48,29 @@ async def main():
         args=['mcp-server-fetch']
     )
     
-    file_mcp = MCPClient(
-        name="mcp-server-file",
-        command="npx",
-        args=['-y', '@modelcontextprotocol/server-filesystem', str(OUTPUT_PATH)]
-    )
+    # file_mcp = MCPClient(
+    #     name="mcp-server-file",
+    #     command="npx",
+    #     args=['-y', '@modelcontextprotocol/server-filesystem', str(OUTPUT_PATH)]
+    # )
     # 创建 PKP MCP 客户端
     pkp_client = MCPClient(
         name='pkp-server',
         command='python',
-        args=['./server/mcp_server_pkp.py']
+        args=['-m', 'src.servers.mcp_server_pkp']
+    )
+
+    # 创建 GetVideo MCP 客户端
+    getvideo_mcp = MCPClient(
+        name='getvideo-server',
+        command='python',
+        args=['-m','src.servers.getVideo.server']  # 确保路径正确
     )
     
     # Step 3: 创建 Agent 并执行任务
     agent = Agent(
         model='gpt-4o-mini',  # 或 'openai/gpt-4o-mini'
-        mcp_clients=[fetch_mcp, file_mcp,pkp_client],
+        mcp_clients=[fetch_mcp,pkp_client,getvideo_mcp],
         system_prompt='',
         context=context
     )

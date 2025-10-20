@@ -25,9 +25,8 @@ OUTPUT_PATH = Path.cwd() / 'output'
 # 告诉我 Karianne 的信息，先从我给你的 context 中找到相关信息，总结后创作一个关于这个人的故事。
 # 把故事和她的基本信息保存到 {OUTPUT_PATH}/antonette.md，输出一个漂亮的 markdown 文件。
 # """
-TASK = f"""帮我看看这个视频的信息，视频在C/abc/h内
+TASK = f"""帮我看看这个视频的信息，视频路径是/media/amax/xiao_20T1/code/jly/agent/llm-mcp-rag-py/data/GOT10k/GOT-10k_Train_009332，分析视频帧的亮度、对比度、清晰度和噪声水平
 """
-
 
 # ============ 主函数 ============
 
@@ -54,11 +53,11 @@ async def main():
     #     args=['-y', '@modelcontextprotocol/server-filesystem', str(OUTPUT_PATH)]
     # )
     # 创建 PKP MCP 客户端
-    pkp_client = MCPClient(
-        name='pkp-server',
-        command='python',
-        args=['-m', 'src.servers.mcp_server_pkp']
-    )
+    # pkp_client = MCPClient(
+    #     name='pkp-server',
+    #     command='python',
+    #     args=['-m', 'src.servers.mcp_server_pkp']
+    # )
 
     # 创建 GetVideo MCP 客户端
     getvideo_mcp = MCPClient(
@@ -69,8 +68,8 @@ async def main():
     
     # Step 3: 创建 Agent 并执行任务
     agent = Agent(
-        model='gpt-4o-mini',  # 或 'openai/gpt-4o-mini'
-        mcp_clients=[fetch_mcp,pkp_client,getvideo_mcp],
+        model='Qwen/Qwen3-8B',  # 或 'openai/gpt-4o-mini'
+        mcp_clients=[getvideo_mcp],
         system_prompt='',
         context=context
     )
